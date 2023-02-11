@@ -47,7 +47,7 @@ func (s *Service) GetAccounts(token string) ([]Account, error) {
 	}
 
 	if res.StatusCode != 200 {
-		return []Account{}, fmt.Errorf("HTTP Error: %d %s", res.StatusCode, res.Status)
+		return []Account{}, fmt.Errorf("HTTP Error %d %s", res.StatusCode, res.Status)
 	}
 
 	// define the data structure expected from Investec.

@@ -52,6 +52,19 @@ func prettyJSONOut(xb []byte) {
 	}
 }
 
+// equalError returns true if two errors are equal.
+func equalError(a, b error) bool {
+	if a == nil && b == nil {
+		return true
+	}
+	if a != nil && b != nil {
+		if a.Error() == b.Error() {
+			return true
+		}
+	}
+	return false
+}
+
 // MarshalResponseJSON is a wrapper function to remove some boilerplate code
 // when parsing the JSON body response from investec.
 func (s *Service) MarshalResponseJSON(res *http.Response, v interface{}) error {
