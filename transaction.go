@@ -22,6 +22,12 @@ type Transaction struct {
 	RunningBalance  float32 `json:"runningBalance"`
 }
 
+type TransactionQueryParameters struct {
+	FromDate        string // 2006-01-02
+	ToDate          string // 2006-01-02
+	TransactionType string // "FeesAndInterest"
+}
+
 // EqualTransactions is a basic comparison that returns a boolean if two slices
 // of Transaction are equal, in length and each indexed element is equal.
 func EqualTransactions(a, b []Transaction) bool {
@@ -37,15 +43,20 @@ func EqualTransactions(a, b []Transaction) bool {
 }
 
 // GetTransactions fetches all the transactions from an account.
-func (s *Service) GetTransactions(token, accountID string) ([]Transaction, error) {
+func (s *Service) GetTransactions(token, accountID string, options TransactionQueryParameters) ([]Transaction, error) {
 	// https://openapi.investec.com/za/pb/v1/accounts/{accountId}/transactions?fromDate={fromDate}&toDate={toDate}&transactionType={transactionType}
 	// set the path
 	s.URL.Path = fmt.Sprintf("/za/pb/v1/accounts/%s/transactions", accountID)
 	// set the query parameters
-	qs := url.Values{
-		"fromDate":        []string{""},
-		"toDate":          []string{""},
-		"transactionType": []string{""},
+	qs := url.Values{}
+	if options.FromDate != "" {
+		qs.Set("fromDate", options.FromDate)
+	}
+	if options.ToDate != "" {
+		qs.Set("toDate", options.ToDate)
+	}
+	if options.TransactionType != "" {
+		qs.Set("transactionType", options.TransactionType)
 	}
 	// add and encode the query parameters
 	s.URL.RawQuery = qs.Encode()

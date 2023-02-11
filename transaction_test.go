@@ -116,8 +116,10 @@ func TestService_GetTransactions(t *testing.T) {
 		name := fmt.Sprintf("%d %s", i, tc.name)
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
+			// query parameters options
+			options := TransactionQueryParameters{}
 			// call the method
-			xt, err := s.GetTransactions("", "123456")
+			xt, err := s.GetTransactions("", "123456", options)
 			if !equalError(tc.err, err) {
 				t.Errorf("expected error %v got %v", tc.err, err)
 			}
