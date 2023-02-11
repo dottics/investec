@@ -18,6 +18,8 @@ func encodeBasic(id, secret string) string {
 
 // Auth authenticates a user based on their authentication credentials.
 func (s *Service) Auth(id, secret, key string) (string, error) {
+	// set the auth path
+	s.URL.Path = "identity/v2/oauth2/token"
 	basic := encodeBasic(id, secret)
 	req, err := http.NewRequest("POST", s.URL.String(), nil)
 	if err != nil {
