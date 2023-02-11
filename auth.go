@@ -33,7 +33,10 @@ func (s *Service) Auth(id, secret, key string) (string, error) {
 		return "", err
 	}
 	body := struct {
-		AccessToken string `json:"accessToken"`
+		AccessToken string `json:"access_token"`
+		TokenType   string `json:"token_type"`
+		ExpiresIn   int    `json:"expires_in"`
+		Scope       string `json:"scope"`
 	}{}
 	err = s.MarshalResponseJSON(res, &body)
 	if err != nil {

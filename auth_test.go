@@ -26,7 +26,7 @@ func TestService_Auth(t *testing.T) {
 	exchange := &microtest.Exchange{
 		Response: microtest.Response{
 			Status: 200,
-			Body:   `{"accessToken":"red"}`,
+			Body:   `{"access_token":"access-token","token_type":"Bearer","expires_in":1799,"scope":"accounts"}`,
 		},
 	}
 	ms.Append(exchange)
