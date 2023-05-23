@@ -9,6 +9,7 @@ import (
 
 // encodeBasic to encode the client id and client secret into a base64 encoded
 // string.
+// mac: echo -n $CLIENT_ID:CLIENT_SECRET | base64
 func encodeBasic(id, secret string) string {
 	data := []byte(fmt.Sprintf("%s:%s", id, secret))
 	dst := make([]byte, base64.StdEncoding.EncodedLen(len(data)))

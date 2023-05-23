@@ -31,35 +31,35 @@ func EqualAccounts(a, b []Account) bool {
 }
 
 // GetAccounts fetches all the accounts that are accessible based on an access token.
-func (s *Service) GetAccounts(token string) ([]Account, error) {
+func (s *Service) GetAccounts(token string) ([]*Account, error) {
 	// set request path
 	s.URL.Path = "/za/pb/v1/accounts"
 	req, err := http.NewRequest(http.MethodGet, s.URL.String(), nil)
 	if err != nil {
-		return []Account{}, err
+		return []*Account{}, err
 	}
 	// add request headers
 	req.Header.Set("authorization", fmt.Sprintf("Bearer %s", token))
 
 	res, err := s.DoRequest(req)
 	if err != nil {
-		return []Account{}, err
+		return nil, err
 	}
 
 	if res.StatusCode != 200 {
-		return []Account{}, fmt.Errorf("HTTP Error %d %s", res.StatusCode, res.Status)
+		return nil, fmt.Errorf("HTTP Error %d %s", res.StatusCode, res.Status)
 	}
 
 	// define the data structure expected from Investec.
 	type Data struct {
-		Accounts []Account `json:"accounts"`
+		Accounts []*Account `json:"accounts"`
 	}
 	resp := struct {
 		Data `json:"data"`
 	}{}
 	err = s.MarshalResponseJSON(res, &resp)
 	if err != nil {
-		return []Account{}, err
+		return nil, err
 	}
 	return resp.Data.Accounts, err
 }
