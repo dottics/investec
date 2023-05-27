@@ -10,7 +10,7 @@ func TestService_GetAccounts(t *testing.T) {
 	tests := []struct {
 		name     string
 		exchange *microtest.Exchange
-		accounts []Account
+		accounts *[]Account
 		err      error
 	}{
 		{
@@ -21,7 +21,7 @@ func TestService_GetAccounts(t *testing.T) {
 					Body:   `{}`,
 				},
 			},
-			accounts: []Account{},
+			accounts: nil,
 			err:      nil,
 		},
 		{
@@ -62,7 +62,7 @@ func TestService_GetAccounts(t *testing.T) {
 					}`,
 				},
 			},
-			accounts: []Account{
+			accounts: &[]Account{
 				{
 					AccountID:     "091298347856091298341011",
 					AccountNumber: "10011238899",
@@ -96,9 +96,6 @@ func TestService_GetAccounts(t *testing.T) {
 			ms.Append(tc.exchange)
 
 			xa, _ := s.GetAccounts("")
-			//if err != tc.err {
-			//	t.Errorf("expected error %v got %v", )
-			//}
 			if !EqualAccounts(tc.accounts, xa) {
 				t.Errorf("expected accounts %v got %v", tc.accounts, xa)
 			}

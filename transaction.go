@@ -30,12 +30,20 @@ type TransactionQueryParameters struct {
 
 // EqualTransactions is a basic comparison that returns a boolean if two slices
 // of Transaction are equal, in length and each indexed element is equal.
-func EqualTransactions(a, b []Transaction) bool {
-	if len(a) != len(b) {
+func EqualTransactions(a, b *[]Transaction) bool {
+	if a == nil && b == nil {
+		// both are nil
+		return true
+	} else if a == nil || b == nil {
+		// either a or be are nil, not both
 		return false
 	}
-	for i := 0; i < len(a); i++ {
-		if a[i] != b[i] {
+	// a and b are both pointers
+	if len(*a) != len(*b) {
+		return false
+	}
+	for i := 0; i < len(*a); i++ {
+		if (*a)[i] != (*b)[i] {
 			return false
 		}
 	}
@@ -43,7 +51,7 @@ func EqualTransactions(a, b []Transaction) bool {
 }
 
 // GetTransactions fetches all the transactions from an account.
-func (s *Service) GetTransactions(token, accountID string, options TransactionQueryParameters) ([]Transaction, error) {
+func (s *Service) GetTransactions(token, accountID string, options TransactionQueryParameters) (*[]Transaction, error) {
 	// https://openapi.investec.com/za/pb/v1/accounts/{accountId}/transactions?fromDate={fromDate}&toDate={toDate}&transactionType={transactionType}
 	// set the path
 	s.URL.Path = fmt.Sprintf("/za/pb/v1/accounts/%s/transactions", accountID)
@@ -63,28 +71,28 @@ func (s *Service) GetTransactions(token, accountID string, options TransactionQu
 	// make request
 	req, err := http.NewRequest(http.MethodGet, s.URL.String(), nil)
 	if err != nil {
-		return []Transaction{}, err
+		return nil, err
 	}
 	// set the request headers
 	req.Header.Set("authorization", token)
 	// do the request
 	res, err := s.DoRequest(req)
 	if err != nil {
-		return []Transaction{}, err
+		return nil, err
 	}
 	if res.StatusCode != 200 {
-		return []Transaction{}, fmt.Errorf("HTTP Error %s", res.Status)
+		return nil, fmt.Errorf("HTTP Error %s", res.Status)
 	}
 	// response data structure
 	type Data struct {
-		Transactions []Transaction `json:"transactions"`
+		Transactions *[]Transaction `json:"transactions"`
 	}
 	resp := struct {
 		Data `json:"data"`
 	}{}
 	err = s.MarshalResponseJSON(res, &resp)
 	if err != nil {
-		return []Transaction{}, err
+		return nil, err
 	}
 	return resp.Data.Transactions, nil
 }

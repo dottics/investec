@@ -18,12 +18,20 @@ type Account struct {
 // EqualAccounts is a basic comparison function to ensure that two slices of
 // accounts are equal. That is, they are equal in length and the order in which
 // accounts are indexed are the same.
-func EqualAccounts(a, b []Account) bool {
-	if len(a) != len(b) {
+func EqualAccounts(a, b *[]Account) bool {
+	// both are nil
+	if a == nil && b == nil {
+		return true
+	} else if a == nil || b == nil {
+		// either a or b is nil
 		return false
 	}
-	for i := 0; i < len(a); i++ {
-		if a[i] != b[i] {
+	// a and b are not nil
+	if len(*a) != len(*b) {
+		return false
+	}
+	for i := 0; i < len(*a); i++ {
+		if (*a)[i] != (*b)[i] {
 			return false
 		}
 	}
@@ -31,35 +39,35 @@ func EqualAccounts(a, b []Account) bool {
 }
 
 // GetAccounts fetches all the accounts that are accessible based on an access token.
-func (s *Service) GetAccounts(token string) ([]Account, error) {
+func (s *Service) GetAccounts(token string) (*[]Account, error) {
 	// set request path
 	s.URL.Path = "/za/pb/v1/accounts"
 	req, err := http.NewRequest(http.MethodGet, s.URL.String(), nil)
 	if err != nil {
-		return []Account{}, err
+		return nil, err
 	}
 	// add request headers
 	req.Header.Set("authorization", fmt.Sprintf("Bearer %s", token))
 
 	res, err := s.DoRequest(req)
 	if err != nil {
-		return []Account{}, err
+		return nil, err
 	}
 
 	if res.StatusCode != 200 {
-		return []Account{}, fmt.Errorf("HTTP Error %d %s", res.StatusCode, res.Status)
+		return nil, fmt.Errorf("HTTP Error %d %s", res.StatusCode, res.Status)
 	}
 
 	// define the data structure expected from Investec.
 	type Data struct {
-		Accounts []Account `json:"accounts"`
+		Accounts *[]Account `json:"accounts"`
 	}
 	resp := struct {
 		Data `json:"data"`
 	}{}
 	err = s.MarshalResponseJSON(res, &resp)
 	if err != nil {
-		return []Account{}, err
+		return nil, err
 	}
 	return resp.Data.Accounts, err
 }

@@ -10,7 +10,7 @@ func TestService_GetTransactions(t *testing.T) {
 	tests := []struct {
 		name         string
 		exchange     *microtest.Exchange
-		transactions []Transaction
+		transactions *[]Transaction
 		err          error
 	}{
 		{
@@ -20,7 +20,7 @@ func TestService_GetTransactions(t *testing.T) {
 					Status: 401,
 				},
 			},
-			transactions: []Transaction{},
+			transactions: nil,
 			err:          fmt.Errorf("HTTP Error 401 Unauthorized"),
 		},
 		{
@@ -72,7 +72,7 @@ func TestService_GetTransactions(t *testing.T) {
 					}`,
 				},
 			},
-			transactions: []Transaction{
+			transactions: &[]Transaction{
 				{
 					AccountID:       "091298347856091298341011",
 					Type:            "DEBIT",
@@ -131,7 +131,7 @@ func TestService_GetTransactions(t *testing.T) {
 }
 
 func TestEqualTransactions(t *testing.T) {
-	a := []Transaction{
+	a := &[]Transaction{
 		{
 			AccountID:       "091298347856091298341011",
 			Type:            "CREDIT",
@@ -148,7 +148,7 @@ func TestEqualTransactions(t *testing.T) {
 			RunningBalance:  935.01,
 		},
 	}
-	b := []Transaction{
+	b := &[]Transaction{
 		{
 			AccountID:       "091298347856091298341011",
 			Type:            "CREDIT",
