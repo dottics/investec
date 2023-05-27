@@ -7,6 +7,12 @@ import (
 	"net/http"
 )
 
+// Credentials is the required information to be able to authenticate the user
+// trying to access that data.
+//
+// NB: it is recommended that the user only allow "read" permissions to the
+// account and only when really necessary allow "write" permissions (or to
+// allow the processing payments).
 type Credentials struct {
 	ClientID string `json:"client_id"`
 	Secret   string `json:"secret"`
