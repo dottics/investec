@@ -30,8 +30,9 @@ func TestService_Auth(t *testing.T) {
 		},
 	}
 	ms.Append(exchange)
+	credentials := &Credentials{}
 
-	to, _ := s.Auth("", "", "")
+	to, _ := s.Auth(credentials)
 	if to != accessToken {
 		t.Errorf("expected access token %s got %s", accessToken, to)
 	}
