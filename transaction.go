@@ -74,7 +74,7 @@ func (s *Service) GetTransactions(token, accountID string, options TransactionQu
 		return nil, err
 	}
 	// set the request headers
-	req.Header.Set("authorization", token)
+	req.Header.Set("authorization", fmt.Sprintf("Bearer %s", token))
 	// do the request
 	res, err := s.DoRequest(req)
 	if err != nil {
