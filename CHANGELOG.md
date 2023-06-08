@@ -5,6 +5,13 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.1.1] - 2023-06-08
+### Fixed
+- The `Auth` method and the request made to investec.
+  - Added the `Content-Type` header to the request.
+  - Added the payload to the request.
+  - Fixed a type of the `Authorization` header.
+
 ## [0.1.0] - 2023-05-27
 ### Added
 - The `Credentials` struct to group the credentials information together.
