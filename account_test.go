@@ -102,3 +102,67 @@ func TestService_GetAccounts(t *testing.T) {
 		})
 	}
 }
+
+func TestService_GetAccountBalance(t *testing.T) {
+	tests := []struct {
+		name     string
+		exchange *microtest.Exchange
+		balance  AccountBalance
+		err      error
+	}{
+		{
+			name: "401 Forbidden",
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 401,
+					Body:   `{}`,
+				},
+			},
+			balance: AccountBalance{},
+			err:     nil,
+		},
+		{
+			name: "200 Success",
+			exchange: &microtest.Exchange{
+				Response: microtest.Response{
+					Status: 200,
+					// this data also serves as a visual example of data to be returned.
+					Body: `{
+						"data": {
+							"accountId": "091298347856091298341011",
+							"accountNumber": "10011238899",
+							"currentBalance": 123456.78,
+							"availableBalance": 345.34,
+							"currency": "ZAR",
+						},
+						"links": {
+							"self": "https://openapi.investec.com/za/pb/v1/accounts/091298347856091298341011/balance"
+						},
+						"meta": {
+							"totalPages": 1
+						}
+					}`,
+				},
+			},
+		},
+	}
+
+	s := NewService("investec")
+	ms := microtest.MockServer(s)
+	defer ms.Server.Close()
+
+	for i, tc := range tests {
+		name := fmt.Sprintf("%d %s", i, tc.name)
+		t.Run(name, func(t *testing.T) {
+			ms.Append(tc.exchange)
+
+			xb, e := s.GetAccountBalance("")
+			if tc.balance != xb {
+				t.Errorf("expected balance %v got %v", tc.balance, xb)
+			}
+			if EqualError(tc.err, e) {
+				t.Errorf("expected error %v got %v", tc.err, e)
+			}
+		})
+	}
+}

@@ -15,6 +15,13 @@ type Account struct {
 	ProfileID     string `json:"profileId"`
 }
 
+type AccountBalance struct {
+	AccountID        string  `json:"accountId"`
+	CurrentBalance   float64 `json:"currentBalance"`
+	AvailableBalance float64 `json:"availableBalance"`
+	Currency         string  `json:"currency"`
+}
+
 // EqualAccounts is a basic comparison function to ensure that two slices of
 // accounts are equal. That is, they are equal in length and the order in which
 // accounts are indexed are the same.
@@ -70,4 +77,38 @@ func (s *Service) GetAccounts(token string) (*[]Account, error) {
 		return nil, err
 	}
 	return resp.Data.Accounts, err
+}
+
+// GetAccountBalance fetches the balance of a specific account.
+func (s *Service) GetAccountBalance(accountID string) (AccountBalance, error) {
+	// set request path
+	s.URL.Path = "/za/pb/v1/accounts/" + accountID + "/balance"
+	req, err := http.NewRequest(http.MethodGet, s.URL.String(), nil)
+	if err != nil {
+		return AccountBalance{}, err
+	}
+	// add request headers
+	req.Header.Set("authorization", fmt.Sprintf("Bearer %s", s.Token))
+	req.Header.Set("Accept", "application/json")
+
+	// make the exchange
+	res, err := s.DoRequest(req)
+	if err != nil {
+		return AccountBalance{}, err
+	}
+
+	if res.StatusCode != 200 {
+		return AccountBalance{}, fmt.Errorf("HTTP Error %d %s", res.StatusCode, res.Status)
+	}
+
+	// define the data structure expected from Investec.
+	resp := struct {
+		AccountBalance AccountBalance `json:"data"`
+	}{}
+	err = s.MarshalResponseJSON(res, &resp)
+	if err != nil {
+		return AccountBalance{}, err
+	}
+
+	return resp.AccountBalance, nil
 }
