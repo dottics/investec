@@ -5,6 +5,15 @@ The format is based on [Keep a changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.2.0] - 2023-06-10
+### Added
+- The `GetAccountBalance` method which returns the balance of an account.
+
+### Changed
+- The investec client or service now stores the access token as part of the 
+  struct. Therefore, it is no longer necessary for the developer to manage the
+  token.
+
 ## [0.1.2] - 2023-06-08
 ### Fixed
 - The `FetchTransactions` methods `Authorization` header.

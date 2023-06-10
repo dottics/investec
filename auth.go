@@ -68,5 +68,7 @@ func (s *Service) Auth(credentials *Credentials) (string, error) {
 		return "", err
 	}
 
+	s.Token = body.AccessToken
+
 	return body.AccessToken, nil
 }

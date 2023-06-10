@@ -13,7 +13,10 @@ import (
 )
 
 type Service struct {
-	URL url.URL
+	// Token is the Bearer token used to authenticate requests to the Investec
+	// API.
+	Token string
+	URL   url.URL
 }
 
 func NewService(envName string) *Service {

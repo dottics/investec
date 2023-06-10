@@ -36,4 +36,8 @@ func TestService_Auth(t *testing.T) {
 	if to != accessToken {
 		t.Errorf("expected access token %s got %s", accessToken, to)
 	}
+	// also check that the auth token has been stored on the service
+	if s.Token != accessToken {
+		t.Errorf("expected access token %s got %s", accessToken, s.Token)
+	}
 }
