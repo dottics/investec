@@ -54,7 +54,7 @@ func (s *Service) GetAccounts() (*[]Account, error) {
 		return nil, err
 	}
 	// add request headers
-	req.Header.Set("authorization", "Bearer"+s.Token)
+	req.Header.Set("authorization", "Bearer "+s.Token)
 	req.Header.Set("accept", "application/json")
 
 	res, err := s.DoRequest(req)
@@ -89,7 +89,7 @@ func (s *Service) GetAccountBalance(accountID string) (AccountBalance, error) {
 		return AccountBalance{}, err
 	}
 	// add request headers
-	req.Header.Set("authorization", fmt.Sprintf("Bearer %s", s.Token))
+	req.Header.Set("authorization", "Bearer "+s.Token)
 	req.Header.Set("accept", "application/json")
 
 	// make the exchange
