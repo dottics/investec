@@ -6,6 +6,8 @@ import (
 )
 
 func TestNewService(t *testing.T) {
+	_ = os.Unsetenv("INVESTEC_SCHEME")
+	_ = os.Unsetenv("INVESTEC_HOST")
 	/*
 		Given we want to be able to mock and simplify the setup of each instance
 		of the integration we want to be able to create a quick mock.
