@@ -46,7 +46,7 @@ func EqualAccounts(a, b *[]Account) bool {
 }
 
 // GetAccounts fetches all the accounts that are accessible based on an access token.
-func (s *Service) GetAccounts(token string) (*[]Account, error) {
+func (s *Service) GetAccounts() (*[]Account, error) {
 	// set request path
 	s.URL.Path = "/za/pb/v1/accounts"
 	req, err := http.NewRequest(http.MethodGet, s.URL.String(), nil)
@@ -54,7 +54,8 @@ func (s *Service) GetAccounts(token string) (*[]Account, error) {
 		return nil, err
 	}
 	// add request headers
-	req.Header.Set("authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Set("authorization", "Bearer"+s.Token)
+	req.Header.Set("accept", "application/json")
 
 	res, err := s.DoRequest(req)
 	if err != nil {
@@ -89,7 +90,7 @@ func (s *Service) GetAccountBalance(accountID string) (AccountBalance, error) {
 	}
 	// add request headers
 	req.Header.Set("authorization", fmt.Sprintf("Bearer %s", s.Token))
-	req.Header.Set("Accept", "application/json")
+	req.Header.Set("accept", "application/json")
 
 	// make the exchange
 	res, err := s.DoRequest(req)

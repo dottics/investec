@@ -51,10 +51,10 @@ func EqualTransactions(a, b *[]Transaction) bool {
 }
 
 // GetTransactions fetches all the transactions from an account.
-func (s *Service) GetTransactions(token, accountID string, options TransactionQueryParameters) (*[]Transaction, error) {
+func (s *Service) GetTransactions(accountID string, options TransactionQueryParameters) (*[]Transaction, error) {
 	// https://openapi.investec.com/za/pb/v1/accounts/{accountId}/transactions?fromDate={fromDate}&toDate={toDate}&transactionType={transactionType}
 	// set the path
-	s.URL.Path = fmt.Sprintf("/za/pb/v1/accounts/%s/transactions", accountID)
+	s.URL.Path = "/za/pb/v1/accounts/" + accountID + "/transactions"
 	// set the query parameters
 	qs := url.Values{}
 	if options.FromDate != "" {
@@ -74,7 +74,7 @@ func (s *Service) GetTransactions(token, accountID string, options TransactionQu
 		return nil, err
 	}
 	// set the request headers
-	req.Header.Set("authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Set("authorization", "Bearer"+s.Token)
 	// do the request
 	res, err := s.DoRequest(req)
 	if err != nil {
