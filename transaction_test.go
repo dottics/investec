@@ -119,7 +119,7 @@ func TestService_GetTransactions(t *testing.T) {
 			// query parameters options
 			options := TransactionQueryParameters{}
 			// call the method
-			xt, err := s.GetTransactions("", "123456", options)
+			xt, err := s.GetTransactions("123456", options)
 			if !equalError(tc.err, err) {
 				t.Errorf("expected error %v got %v", tc.err, err)
 			}

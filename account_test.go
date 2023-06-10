@@ -95,7 +95,7 @@ func TestService_GetAccounts(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			ms.Append(tc.exchange)
 
-			xa, _ := s.GetAccounts("")
+			xa, _ := s.GetAccounts()
 			if !EqualAccounts(tc.accounts, xa) {
 				t.Errorf("expected accounts %v got %v", tc.accounts, xa)
 			}
