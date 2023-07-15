@@ -3,6 +3,7 @@ package investec
 import (
 	"encoding/base64"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -52,8 +53,13 @@ func (s *Service) Auth(credentials *Credentials) (string, error) {
 		return "", err
 	}
 	if res.StatusCode != 200 {
-		log.Printf("Investec Error: %s", res.Status)
-		return "", fmt.Errorf("investec: authentication failed status: %s", res.Status)
+		xb, err := io.ReadAll(res.Body)
+		if err != nil {
+			log.Println("Investec Error PKG: error reading response body", err)
+		}
+		log.Printf("Investec Error PKG: %s\n", res.Status)
+		log.Printf("Investec Error Response Body PKG: %s\n", string(xb))
+		return "", fmt.Errorf("investec pkg: authentication failed status: %s", res.Status)
 	}
 
 	body := struct {
